@@ -133,7 +133,11 @@ parameters:
 - mysql 클라이언트 파드 생성
 ```
 $ kubectl run mysql-client --image=mysql:8 -it --rm -- bash
-$ mysql -h sns-db.cx4c4caqifyp.ap-northeast-2.rds.amazonaws.com -u admin -p
+```
+- mysql 클라이언트 실행
+```
+$ mysql -h [RDS Endpoint] -u admin -p
+(패스워드 입력)
 ```
 - DDL 실행
 ```sql
