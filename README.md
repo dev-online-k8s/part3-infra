@@ -209,3 +209,4 @@ spec:
   - image-server
   - notification-batch
   - sns-frontend
+- 각 저장소에 대해 Create Repository 눌러서 생성 완료
