@@ -132,11 +132,11 @@ parameters:
 
 - mysql 클라이언트 파드 생성
 ```
-$ kubectl run mysql-client --image=mysql:8 -it --rm -- bash
+kubectl run mysql-client --image=mysql:8 -it --rm -- bash
 ```
 - mysql 클라이언트 실행
 ```
-$ mysql -h [RDS Endpoint] -u admin -p
+mysql -h [RDS Endpoint] -u admin -p
 (패스워드 입력)
 ```
 - DDL 실행
@@ -179,17 +179,17 @@ create table follow
 ## Redis, Kafka, DB Service 설치
 - Namespace
 ```sh
-$ kubectl create namespace infra
+kubectl create namespace infra
 ```
 
 - Redis
 ```sh
-$ helm -n infra install redis oci://registry-1.docker.io/bitnamicharts/redis --set architecture=standalone --set auth.enabled=false --set master.persistence.enabled=false
+helm -n infra install redis oci://registry-1.docker.io/bitnamicharts/redis --set architecture=standalone --set auth.enabled=false --set master.persistence.enabled=false
 ```
 
 - Kafka
 ```sh
-$ helm -n infra install kafka oci://registry-1.docker.io/bitnamicharts/kafka --set controller.replicaCount=3  --set sasl.client.passwords=kafkakafka123! --set controller.persistence.enabled=false --set broker.persistence.enabled=false
+helm -n infra install kafka oci://registry-1.docker.io/bitnamicharts/kafka --set controller.replicaCount=3  --set sasl.client.passwords=kafkakafka123! --set controller.persistence.enabled=false --set broker.persistence.enabled=false
 ```
 
 ### External Name Service 설정
