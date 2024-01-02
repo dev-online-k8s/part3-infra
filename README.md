@@ -200,3 +200,12 @@ spec:
   type: ExternalName
   externalName: [RDS MySQL DB주소]
 ```
+
+## ECR Repository 생성
+- ECR - private registry - Repositories - Create Repository
+- 다음과 같이 Private 저장소 생성
+  - feed-server
+  - user-server
+  - image-server
+  - notification-batch
+  - sns-frontend
