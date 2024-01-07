@@ -29,5 +29,6 @@ create table follow
         primary key,
     user_id         int                                not null,
     follower_id     int                                not null,
-    follow_datetime datetime default CURRENT_TIMESTAMP null
+    follow_datetime datetime default CURRENT_TIMESTAMP null,
+    mail_sent_datetime datetime default null
 );
