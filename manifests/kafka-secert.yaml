@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kafka-secret
+type: Opaque
+data:
+  KAFKA_USER: dXNlcjE=
+  KAFKA_PASSWORD: a2Fma2FrYWZrYTEyMyE=

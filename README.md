@@ -1,6 +1,6 @@
 # Infra Setting
 
-## EKS Cluster 생성
+## Chapter 1 : EKS Cluster 생성
 
 ### IAM Role 생성
 - eks-cluster-role
@@ -205,12 +205,138 @@ spec:
   externalName: [RDS MySQL DB주소]
 ```
 
-## ECR Repository 생성
+### ECR Repository 생성
 - ECR - private registry - Repositories - Create Repository
 - 다음과 같이 Private 저장소 생성
   - feed-server
   - user-server
   - image-server
   - notification-batch
+  - timeline-server
   - sns-frontend
 - 각 저장소에 대해 Create Repository 눌러서 생성 완료
+
+## Chapter 6 : Monitoring
+
+### metrics-server 설치
+
+- https://github.com/kubernetes-sigs/metrics-server에서 설치 방법 확인 가능
+```sh
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+
+### Prometheus와 Grafana 설치
+
+- Helm Repository 추가
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+```
+
+- Namespace 생성
+```sh
+kubectl create namespace monitoring
+```
+
+- Prometheus 설치
+```sh
+helm install prometheus prometheus-community/prometheus --namespace monitoring  --set server.persistentVolume.enabled=false --set alertmanager.persistence.enabled=false
+```
+
+- grafana.yaml 생성
+```yaml
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus-server.monitoring.svc.cluster.local
+      access: proxy
+      isDefault: true
+```
+- Grafana 설치
+```sh
+helm install grafana grafana/grafana  --namespace monitoring --set persistence.enabled=false --set adminPassword="admin01" --values ./grafana.yaml
+```
+
+### OpenLens 설치
+- https://github.com/MuhammedKalkan/OpenLens/ 에서 릴리즈 다운로드 
+
+### KubeCost 설치
+```sh
+helm upgrade -i kubecost oci://public.ecr.aws/kubecost/cost-analyzer --version 1.108.1 \
+    --namespace monitoring --set persistentVolume.enabled=false --set prometheus.server.persistentVolume.enabled=false \
+    -f https://raw.githubusercontent.com/kubecost/cost-analyzer-helm-chart/develop/cost-analyzer/values-eks-cost-monitoring.yaml
+```
+- port-fowarding
+```yaml
+kubectl port-forward --namespace monitoring deployment/kubecost-cost-analyzer 9090
+```
+
+## Chapter 7: 성능 테스트 및 테스트 데이터 추가
+
+### k6 설치
+- https://k6.io 에서 다운로드 후 설치
+
+### 테스트 데이터 추가
+```sh
+git clone https://github.com/dev-online-k8s/part3-testdatagen.git
+```
+
+```sh
+SNS_DATA_GENERATOR_TELEPRESENCE_ENABLED=true java -jar TestDataGen.jar
+```
+
+### Frontend Deploy 배포
+
+```sh
+docker pull jheo/sns-frontend:1.0.0
+docker tag jheo/sns-frontend:1.0.0 {ecr주소}/sns-frontend:1.0.0
+docker push {ecr주소}/sns-frontend:1.0.0
+```
+- push에서 인증 오류 발생 시 ECR의 View push command 버튼 눌러서 로그인 방법 수행
+  - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin {account id}.dkr.ecr.ap-northeast-2.amazonaws.com
+
+- Deployment와 Service 생성 및 배포
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sns-frontend
+  namespace: sns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sns-frontend
+  template:
+    metadata:
+      labels:
+        app: sns-frontend
+    spec:
+      containers:
+        - name: sns-frontend-container
+          image: {ecr주소}/sns-frontend:1.0.0
+```
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sns-frontend-service
+  namespace: sns
+spec:
+  selector:
+    app: sns-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+```
+
+### Ingress Controller 설치
+- https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/alb-ingress.html
+- https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/aws-load-balancer-controller.html
+
+
+

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sns-frontend
+  namespace: sns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sns-frontend
+  template:
+    metadata:
+      labels:
+        app: sns-frontend
+    spec:
+      containers:
+        - name: sns-container
+          image: 638597541124.dkr.ecr.ap-northeast-2.amazonaws.com/sns-frontend:1.0.0
+

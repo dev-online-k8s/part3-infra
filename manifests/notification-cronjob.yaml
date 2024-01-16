@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: notification-batch
+  namespace: sns
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      parallelism: 1
+      completions: 1
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 120
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: notification-container
+              image: 638597541124.dkr.ecr.ap-northeast-2.amazonaws.com/notification-batch:0.0.1
+              env:
+                - name: SPRING_PROFILES_ACTIVE
+                  value: dev
+              envFrom:
+                - configMapRef:
+                    name: mysql-config
+                - secretRef:
+                    name: mysql-secret
+                - configMapRef:
+                    name: email-config
+                - secretRef:
+                    name: email-secret

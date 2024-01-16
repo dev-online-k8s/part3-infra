@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: email-config
+  namespace: sns
+data:
+  SMTP_HOST: "email-smtp.ap-northeast-2.amazonaws.com"
+  SMTP_PORT: "587"
+  SMTP_AUTH: "true"
+  SMTP_TLS: "true"

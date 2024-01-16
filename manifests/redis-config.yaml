@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: sns
+data:
+  REDIS_HOST: "redis-master.infra.svc.cluster.local"
+  REDIS_PORT: "6379"

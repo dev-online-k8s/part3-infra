@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sns-frontend-service
+  namespace: sns
+spec:
+  selector:
+    app: sns-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
