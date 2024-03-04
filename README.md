@@ -4,7 +4,27 @@
 - AWS에서 EKS, EC2(Node Group), RDS를 사용하는 과정은 사용한 시간에 따라 일정한 비용을 소모하게 됩니다. 따라서 인프라를 생성하여 실습하신 뒤 해당 인프라를 그대로 방치해두면 많은 비용이 청구될 수 있으므로 가급적이면 전체 실습 과정을 한 번에 수행하시고 실습에 사용했던 인프라를 모두 제거해주시기 바라겠습니다.
 - 비용 청구가 부담스러우신 분은 기존 실습에 사용하셨던 kind를 기반으로 한 로컬 환경을 그대로 사용하셔도 상관 없습니다.
   - 이 경우 저장소는 별도의 Storage Class 생성 없이 emptydir로 지정하여 사용하여 주세요. (image-server는 1개로 유지해주세요)
-  - Database는 MySQL을 로컬 환경 혹은 Helm을 이용해 설치하여 사용해주세요.
+  - Database, Redis, Kafka는 Helm을 이용해 설치해주세요.
+- Namespace
+```sh
+kubectl create namespace infra
+```
+- MySQL
+```sh
+helm -n infra install mysql oci://registry-1.docker.io/bitnamicharts/mysql --set primary.persistence.enabled=false --set auth.rootPassword=password!
+```
+- Redis
+```sh
+helm -n infra install redis oci://registry-1.docker.io/bitnamicharts/redis --set architecture=standalone --set auth.enabled=false --set master.persistence.enabled=false
+```
+
+- Kafka
+```sh
+helm -n infra install kafka oci://registry-1.docker.io/bitnamicharts/kafka --set controller.replicaCount=3  --set sasl.client.passwords=kafkakafka123! --set controller.persistence.enabled=false --set broker.persistence.enabled=false
+```
+
+- 데이터베이스가 mysql.infra.svc.cluster.local로 접근가능하도록 설치되므로 별도로 ExternalName 서비스는 만들지 않아도 괜찮습니다
+- 이후 DDL 구문 실행 등 인프라 Set-up 작업을 동일하게 진행합니다
 
 ## Chapter 1 : EKS Cluster 생성
 
