@@ -4,9 +4,9 @@ use sns;
 create user 'sns-server'@'%' identified by 'password!';
 grant all privileges on sns.* to 'sns-server'@'%';
 
-create table social_feed
+create table post
 (
-    feed_id         int auto_increment
+    post_id         int auto_increment
         primary key,
     image_id        varchar(255)                       not null,
     uploader_id     int                                not null,

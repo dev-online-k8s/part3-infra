@@ -5,4 +5,4 @@ metadata:
 type: Opaque
 data:
   KAFKA_USER: dXNlcjE=
-  KAFKA_PASSWORD: a2Fma2FrYWZrYTEyMyE=
+  KAFKA_PASSWORD: a2Fma2FrYWZrYTEyMyE=/Users/juneheo/K8S-Workspace/part3-infra/manifests/kafka-configmap.yaml
