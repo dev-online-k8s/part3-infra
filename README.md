@@ -262,6 +262,8 @@ spec:
 > 클러스터 생성 시 퍼블릭 서브넷에 [kubernetes.io/role/elb](http://kubernetes.io/role/elb) 태그를 지정해주지 않은 경우 인그레스가 정상적으로 설정되지 않을 수 있으므로 주의해주세요.
 >
 
+> 아래 가이드는 강의 동영상에 정의된 Auto Mode를 사용하지 않는 설정에 대한 가이드입니다. 위 Auto Mode 설정으로 설정이 완료된 경우 아래 내용 중 클러스터 생성 파트는 넘어가셔도 됩니다.
+
 ## Chapter 1 : EKS Cluster 생성
 
 ### IAM Role 생성
